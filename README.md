@@ -107,6 +107,7 @@ Back to the Dockerfile : <br/>
 
 ```
 
+## CONTAINER_SETUP.SH
 
 Open this script `srcs/scripts/container_setup.sh`, and I'll go through each line again. Understand that from now on, every command line is running in the container, not in your computer. <br/>
 
