@@ -1,51 +1,89 @@
 # ft_server
 
+## Introduction
+
 This is a 42 school project that allow us to have a first look at Docker and its uses to build and run a container with a LEMP stack server in it and a wordpress.
 In this tutorial, I'll try to go throught each step, with my actual (and limited) knowledge. The subject can be found in the files.
 
-Usefull links to have quick overview of Docker and containers : <br/>
-https://en.wikipedia.org/wiki/Docker_(software) <br/>
-https://www.docker.com/ <br/>
+Useful links to have quick overview of Docker and containers :  
+https://en.wikipedia.org/wiki/Docker_(software)
+https://www.docker.com/
 
-Usefull links about dockerfiles : <br/>
-https://docs.docker.com/engine/reference/builder/#from <br/>
-https://docs.docker.com/develop/develop-images/dockerfile_best-practices/ <br/>
+Useful links about dockerfiles :  
+https://docs.docker.com/engine/reference/builder/#from
+https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+
 
 LEMP is a software stack. In other words, it is  a group of softwares you put together to work one with each other.
 LEMP stands for : Linux, Nginx ('E' of LEMP goes for "Engine X"), MySQL, Php.
 In addition of the LEMP stack, you will also need to install Wordpress.
-If you don't know some of these softwares, check out these links before starting : <br/>
-https://en.wikipedia.org/wiki/Linux <br/>
-https://en.wikipedia.org/wiki/Nginx <br/>
-https://en.wikipedia.org/wiki/MySQL <br/>
-https://en.wikipedia.org/wiki/PHP <br/>
-https://en.wikipedia.org/wiki/WordPress <br/>
 
-**DOCKERFILE.** <br/>
+If you don't know some of these softwares, check out these links before starting :  
+https://en.wikipedia.org/wiki/Linux
+https://en.wikipedia.org/wiki/Nginx
+https://en.wikipedia.org/wiki/PHP
+https://en.wikipedia.org/wiki/WordPress
+
+## DOCKERFILE
+
 First things first, you need to create a Dockerfile, which is, in some ways, similar to a Makefile. It's a file that allows you to set some parameters for the container you want to build.
 Open my Dockerfile, I'll go through each line to explain it.
 
-**line 2 :** `FROM                debian:buster-slim` <br/>
-Define which OS will be installed in the container you are building.<br/>
+```
+# Dockerfile
+FROM debian:buster-slim
+RUN apt-get -y update
+RUN apt-get -y install wget
+RUN apt-get -y install nginx
+RUN apt-get -y install php php-cli php-cgi php-mbstring php-fpm php-mysql
+RUN apt-get -y install mariadb-server
+RUN apt-get -y install libnss3-tools
+ENV INDEX=on
+COPY srcs /root/
+WORKDIR /root/
+ENTRYPOINT ["bash", "scripts/container_setup.sh"]
+```
 
-**line 5 :** `RUN                       apt-get -y update` <br/>
-Update the container's system and installed programs.  
+`FROM debian:buster-slim`  
+Define which OS will be installed in the container you are building.
 
-**line 8-9 :** `RUN                     apt-get -y install wget` <br/>
-Install wget, which will be usefull later on to make the SSL certificate. <br/>
+`RUN apt-get -y update`  
+Update the container's system and installed programs.
 
-**line 11 :** `RUN                      apt-get -y install nginx` <br/>
-Install Nginx, this will be your web server in this project. <br/>
+`RUN apt-get -y install wget`  
+Install wget, which will be usefull later on to make the SSL certificate.
 
-**line 14 :** `RUN                      apt-get -y install php php-cli php-cgi php-mbstring php-fpm php-mysql` <br/>
-Install PHP, you will use PhpMyAdmin as an administration tool for both MySQL and your Wordpress. <br/>
 
-**line 17 :** `RUN                      apt-get -y install mariadb-server` <br/> 
-Install MariaDB. It is a fork of MySQL, and will be your database management tool. <br/>
+`RUN apt-get -y install nginx`  
+Install Nginx, this will be your web server in this project.
 
-**line 20 :** `RUN                      apt-get -y install libnss3-tools` <br/> 
-Install libnss3-tools, which will be usefull later on to make the SSL certificate. <br/>
+`RUN apt-get -y install php php-cli php-cgi php-mbstring php-fpm php-mysql`  
+Install PHP, you will use PhpMyAdmin as an administration tool for both MySQL and your Wordpress.
 
+`RUN apt-get -y install mariadb-server`  
+Install MariaDB. It is a fork of MySQL, and will be your database management tool.
+
+`RUN apt-get -y install libnss3-tools`  
+Install libnss3-tools, which will be usefull later on to make the SSL certificate.
+
+_A message before going any further, to go XX_
+
+`ENVINDEX=on`  
+Create and set an environement variable. It will be usefull later on, to be able to activate or not the index on the website.
+
+`COPY srcs /root/`  
+Copy all your files and directories within your `srcs` folder (in your actual computer) in `/root/ directory` (in the container).
+
+`WORKDIR /root/`  
+Define the directory you want to be in when you run your container.
+
+`ENTRYPOINT ["bash", "scripts/container_setup.sh"]`  
+Run a script to configure the container.
+
+That is it for the Dockerfile, it is pretty straight forward. As shown on the last line, you lastly run a script to configure your container, that is the next thing I will explain.<br/>
+
+_This block should be placed somewhere clearer :_
+```
 At this point, you have installed all the packages you need to run your container properly. I recommend you to do some testing here before going further. <br/>
 You will find all the docker commands here : <br/>
 https://docs.docker.com/engine/reference/commandline/docker/ <br/>
@@ -67,21 +105,9 @@ Then, you can go to your web browser and type the IP. It should open a page with
 That way you verified 2 things : the container builds propely, and Nginx is working as intended. You will check the other softwares later on. <br/>
 Back to the Dockerfile : <br/>
 
-**line 23 :** `ENV                      INDEX=on` <br/>
-Create and set an environement variable. It will be usefull later on, to be able to activate or not the index on the website. <br/>
+```
 
-**line 26 :** `COPY             srcs /root/` <br/>
-Copy all your files and directories within your `srcs` folder (in your actual computer) in `/root/ directory` (in the container). <br/>
 
-**line 29 :** `WORKDIR          /root/` <br/>
-Define the directory you want to be in when you run your container. <br/>
-
-**line 32 :** `ENTRYPOINT       ["bash", "scripts/container_setup.sh"]` <br/>
-Run a script to configure the container. <br/>
-
-That is it for the Dockerfile, it is pretty straight forward. As shown on the last line, you lastly run a script to configure your container, that is the next thing I will explain.<br/>
-
-**CONTAINER_SETUP.SH** <br/>
 Open this script `srcs/scripts/container_setup.sh`, and I'll go through each line again. Understand that from now on, every command line is running in the container, not in your computer. <br/>
 
 **line 4 :** `mkdir     /var/www/localhost` <br/>
