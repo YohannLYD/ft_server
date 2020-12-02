@@ -6,11 +6,11 @@ This is a 42 school project that allow us to have a first look at Docker and its
 In this tutorial, I'll try to go throught each step, with my actual (and limited) knowledge. The subject can be found in the files.
 
 Useful links to have quick overview of Docker and containers :  
-https://en.wikipedia.org/wiki/Docker_(software)
+https://en.wikipedia.org/wiki/Docker_(software)  
 https://www.docker.com/
 
 Useful links about dockerfiles :  
-https://docs.docker.com/engine/reference/builder/#from
+https://docs.docker.com/engine/reference/builder/#from  
 https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
 
 
@@ -19,9 +19,9 @@ LEMP stands for : Linux, Nginx ('E' of LEMP goes for "Engine X"), MySQL, Php.
 In addition of the LEMP stack, you will also need to install Wordpress.
 
 If you don't know some of these softwares, check out these links before starting :  
-https://en.wikipedia.org/wiki/Linux
-https://en.wikipedia.org/wiki/Nginx
-https://en.wikipedia.org/wiki/PHP
+https://en.wikipedia.org/wiki/Linux  
+https://en.wikipedia.org/wiki/Nginx  
+https://en.wikipedia.org/wiki/PHP  
 https://en.wikipedia.org/wiki/WordPress
 
 ## DOCKERFILE
